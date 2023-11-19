@@ -394,9 +394,9 @@ service php8.0-fpm start
 #### PORT LARAVEL WORKER
 
 ```
-192.173.4.1:8001; Untuk Fern
-192.173.4.2:8002; Untuk Flamme
-192.173.4.3:8003; Untuk Frieren
+10.67.4.1:8001; Untuk Fern
+10.67.4.2:8002; Untuk Flamme
+10.67.4.3:8003; Untuk Frieren
 ```
 
 ### Testing
@@ -413,6 +413,56 @@ lynx localhost:<PORT LARAVEL WORKER>
     <img src="https://i.ibb.co/cTZSg9m/14b.jpg">
 <p align="center">
     <img src="https://i.ibb.co/s3zz76H/14a.jpg">
+
+---
+
+# Nomor 15, 16, 17
+
+Riegel Channel memiliki beberapa endpoint yang harus ditesting sebanyak 100 request dengan 10 request/second. Tambahkan response dan hasil testing pada grimoire.
+
+    - POST /auth/register (15)
+    - POST /auth/login (16)
+    - GET /me (17)
+
+Pada soal tersebut, Praktikan disuruh untuk melakukan socket connection ke setup Mariadb dengan (Denken) Database server
+
+### Scripting
+
+> Kita akan melakukan testing pada 3 endpoint (15, 16, 17) dengan bantuan **Apache Benchmark**
+
+Pada nomer ini, praktikan diperintahkan untuk melakukan testing pada salah satu Laravel Worker yang nantinya akan dilakukan benchmark oleh Client
+
+Di sini, kelompok kami akan melakukan testing pada
+
+````bash
+apt-get update
+apt-get install lynx -y
+apt-get install htop -y
+apt-get install apache2-utils -y
+apt-get install jq -y
+
+### Nomor 15
+echo '
+{
+  "username": "kelompokit07",
+  "password": "passwordit07"
+}' > register.json
+
+### Nomor 16
+echo '
+{
+  "username": "kelompokit07",
+  "password": "passwordit07"
+}' > login.json
+
+### Nomor 17
+curl -X POST -H "Content-Type: application/json" -d @login.json http://10.67.4.1:8001/api/auth/login > login_output.txt
+
+### Nomor 17
+token=$(cat login_output.txt | jq -r '.token')```
+````
+
+Dan berikut ini adalah hasil dari benchmark nya
 
 ### Result 15
 
