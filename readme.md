@@ -158,6 +158,8 @@ gateway 10.67.4.0
 
 ## Template per-soal
 
+---
+
 ### (Nomor).
 
 > [Desikripsi Soal]
@@ -190,6 +192,8 @@ zone "abimanyu.it07.com" {
 
 <p align="center">
     <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg">
+
+---
 
 ### 13.
 
@@ -247,6 +251,8 @@ mariadb --host=10.67.2.1 --port=3306 --user=kelompokit07 --password=passwordit07
 
 <p align="center">
     <img src="https://i.ibb.co/Pmd7czQ/13.jpg">
+
+---
 
 ### 14.
 
