@@ -197,18 +197,51 @@ zone "abimanyu.it07.com" {
 
 ### Scripting
 
+> Masukkan script ini pada .bashrc di Database server alias **Denken**
+
 ```bash
-awk grep fafifu
+echo 'nameserver 10.67.1.2' > /etc/resolv.conf
+apt-get update
+apt-get install mariadb-server -y
+service mysql start
+
+echo '# This group is read both by the client and the server
+# use it for options that affect everything
+[client-server]
+
+# Import all .cnf files from configuration directory
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mariadb.conf.d/
+
+# Options affecting the MySQL server (mysqld)
+[mysqld]
+skip-networking=0
+skip-bind-address
+' > /etc/mysql/my.cnf
+
+service mysql restart
 ```
 
 ```bash
-cp /etc/bind/db.local /etc/bind/jarkom/abimanyu.it07.com
+mysql -u root -p
 ```
 
-### Result
+> Setelah mysql berhasil dijalankan pada denken, masukan script SQL berikut
 
-<p align="center">
-    <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg">
+```bash
+CREATE USER 'kelompokit07'@'%' IDENTIFIED BY 'passwordit07';
+CREATE USER 'kelompokit07'@'localhost' IDENTIFIED BY 'passwordit07';
+CREATE DATABASE dbkelompokit07;
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit07'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit07'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Selanjutnya, lakukan pengecekan pada Laravel worker, apakah sudah bisa melihat data yang diperlukan
+
+```bash
+mariadb --host=10.67.2.1 --port=3306 --user=kelompokit07 --password=passwordit07 dbkelompokit07 -e "SHOW DATABASES;"
+```
 
 ### Result 13
 
