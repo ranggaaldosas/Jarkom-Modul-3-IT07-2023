@@ -191,7 +191,7 @@ zone "abimanyu.it07.com" {
 ### Result
 
 <p align="center">
-    <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg">
+    <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg" width=350 length=350>
 
 ---
 
@@ -416,9 +416,9 @@ lynx localhost:<PORT LARAVEL WORKER>
 ### Result 14
 
 <p align="center">
-    <img src="https://i.ibb.co/cTZSg9m/14b.jpg">
+    <img src="https://i.ibb.co/cTZSg9m/14b.jpg" width=500 length=500>
 <p align="center">
-    <img src="https://i.ibb.co/s3zz76H/14a.jpg">
+    <img src="https://i.ibb.co/s3zz76H/14a.jpg" width=500 length=500>
 
 ---
 
@@ -473,14 +473,43 @@ Dan berikut ini adalah hasil dari benchmark nya
 ### Result 15
 
 <p align="center">
-    <img src="https://i.ibb.co/X5KqNGx/15.jpg">
+    <img src="https://i.ibb.co/X5KqNGx/15.jpg" width=400 length=400>
 
 ### Result 16
 
 <p align="center">
-    <img src="https://i.ibb.co/8XMV453/16.jpg">
+    <img src="https://i.ibb.co/8XMV453/16.jpg" width=400 length=400>
 
 ### Result 17
 
 <p align="center">
-    <img src="https://i.ibb.co/r63BdWr/17.jpg">
+    <img src="https://i.ibb.co/r63BdWr/17.jpg" width=400 length=400>
+
+### Result 18
+
+<p align="center">
+    <img src="https://i.ibb.co/SRnXQxx/18a.jpg" width=400 length=400>
+<p align="center">
+    <img src="https://i.ibb.co/GJn3Msx/18b.jpg" width=400 length=400>
+<p align="center">
+    <img src="https://i.ibb.co/0K0q90S/18c.jpg" width=400 length=400>
+<p align="center">
+    <img src="https://i.ibb.co/dgYFj1K/18d.jpg" width=400 length=400>
+
+### Result 19
+
+<p align="center">
+    <img src="https://i.ibb.co/2kk5xtL/19a.jpg" width=400 length=400>
+### Result 18
+
+<p align="center">
+    <img src="https://i.ibb.co/sCjzbyt/19b.jpg" width=400 length=400>
+### Result 18
+
+<p align="center">
+    <img src="https://i.ibb.co/vv2mYfn/19c.jpg" width=400 length=400>
+
+### Result 20
+
+<p align="center">
+    <img src="https://i.ibb.co/Y7RQmC7/20.jpg" width=400 length=400>
