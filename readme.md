@@ -156,44 +156,255 @@ gateway 10.67.4.0
 - 6 (https://drive.google.com/file/d/1ViSkRq7SmwZgdK64eRbr5Fm1EGCTPrU1/view?usp=sharing)
 - 14 (https://github.com/martuafernando/laravel-praktikum-jarkom)
 
-## Template per-soal
 
----
+### 1
+> Lakukan semua config diatas serta buatlah file bashrc pada root
+Lalu arahkan semua client agar menggunakan konfigurasi dhcp 
 
-### (Nomor).
+### Testing
 
-> [Desikripsi Soal]
+```bash
+ping riegel.canyon.it07.com
+ping granz.channel.it07.com
+
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/KbMXmLw/Screenshot-2023-11-20-193431.png" width=500 length=500>
+
+### 2
+>Lakukan konfigurasi berdasarkan range IP dari [prefix IP].3.16 - [prefix IP].3.32 dan [prefix IP].3.64 - [prefix IP].3.80 (2)
+
+To deploy this project run
+### Scripting
+
+
+```bash
+  echo 'subnet 10.67.1.0 netmask 255.255.255.0 {
+}
+
+
+subnet 10.67.2.0 netmask 255.255.255.0 {
+}
+
+
+subnet 10.67.3.0 netmask 255.255.255.0 {
+    range 10.67.3.16 10.67.3.32;
+    range 10.67.3.64 10.67.3.80;
+    option routers 10.67.3.0;
+}' > /etc/dhcp/dhcpd.conf
+```
+
+
+
+### 3
+>Lakukan konfigurasi berdasarkan range IP dari [prefix IP].4.12 - [prefix IP].4.20 dan [prefix IP].4.160 - [prefix IP].4.168 (3)
 
 ### Scripting
 
 ```bash
-awk grep fafifu
+  echo 'subnet 10.67.1.0 netmask 255.255.255.0 {
+}
+
+
+subnet 10.67.2.0 netmask 255.255.255.0 {
+}
+
+
+subnet 10.67.3.0 netmask 255.255.255.0 {
+    range 10.67.3.16 10.67.3.32;
+    range 10.67.3.64 10.67.3.80;
+    option routers 10.67.3.0;
+}
+
+
+subnet 10.67.4.0 netmask 255.255.255.0 {
+    range 10.67.4.12 10.67.4.20;
+    range 10.67.4.160 10.67.4.168;
+    option routers 10.67.4.0;
+} ' > /etc/dhcp/dhcpd.conf
 ```
+
+### 4
+>Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS server
+
+### Testing
 
 ```bash
-cp /etc/bind/db.local /etc/bind/jarkom/abimanyu.it07.com
+ping google.com
+ping riegel.canyon.it07.com
 
-echo 'zone "arjuna.it07.com" {
-        type master;
-        file "/etc/bind/jarkom/arjuna.it07.com";
-        allow-transfer { 10.67.2.2; }; // IP Werkudara
-};
-
-zone "abimanyu.it07.com" {
-        type master;
-        notify yes;
-        also-notify { 10.67.2.2; }; // IP Werkudara
-        allow-transfer { 10.67.2.2; }; // IP Werkudara
-        file "/etc/bind/jarkom/abimanyu.it07.com";
-};' > /etc/bind/named.conf.local
 ```
 
-### Result
+### Result 
 
 <p align="center">
-    <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg" width=350 length=350>
+    <img src="https://i.ibb.co/jrpN03b/Screenshot-2023-11-20-194116.png" width=500 length=500>
 
----
+### 5
+>melakukan konfigurasi DHCP untuk alamat IP kepada Client yang melalui Switch3 selama 3 menit sedangkan pada client yang melalui Switch4 selama 12 menit
+
+### Testing
+
+```bash
+telnet (sesuai IP client switch3 dan switch4)
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/DC1wzCm/Screenshot-2023-11-20-194158.png" width=500 length=500>
+<p align="center">
+    <img src="https://i.ibb.co/stKKTqX/Screenshot-2023-11-20-194226.png" width=500 length=500>
+    
+### 6
+>Lakukan konfigurasi web pada masing masing worker
+### Testing
+
+```bash
+lynx localhost
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/q7ng0CY/Screenshot-2023-11-20-194406.png" width=500 length=500>
+
+### 7
+>lakukan testing dengan 1000 request dan 100 request/second
+### Testing
+
+```bash
+ab -n 1000 -c 100 http://www.granz.channel.it07.com/ 
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/xzbgxpF/Screenshot-2023-11-20-194538.png" width=500 length=500>
+
+### 8
+>testing dengan 200 request dan 10 request/second masing-masing algoritma Load Balancer yang berbeda
+
+### Testing
+
+```bash
+ab -n 200 -c 10 http://www.granz.channel.it07.com/ 
+```
+
+### Generic Hash
+
+<p align="center">
+    <img src="https://i.ibb.co/3pJW4x6/Screenshot-2023-11-20-181147.png" width=500 length=500>
+
+### Iphash
+
+<p align="center">
+    <img src="https://i.ibb.co/QrHHfc4/Screenshot-2023-11-20-181340.png" width=500 length=500>
+
+### least-Connection
+
+<p align="center">
+    <img src="https://i.ibb.co/c8S2ddx/Screenshot-2023-11-20-181422.png" width=500 length=500>
+
+### RoundRobin 
+
+<p align="center">
+    <img src="https://i.ibb.co/9VCFQwj/Screenshot-2023-11-20-181546.png" width=500 length=500>
+
+### Grafik
+
+<p align="center">
+    <img src="https://i.ibb.co/Yf98Cq5/Screenshot-2023-11-20-205350.png" width=500 length=500>
+
+### 9
+>menggunakan algoritma Round Robin melakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second
+### Testing
+
+```bash
+ab -n 100 -c 10 http://www.granz.channel.it07.com/
+```
+
+### 3 worker
+
+<p align="center">
+    <img src="https://i.ibb.co/9VCFQwj/Screenshot-2023-11-20-181546.png" width=500 length=500>
+
+### 2 worker
+
+<p align="center">
+    <img src="https://i.ibb.co/YXGLwpf/Screenshot-2023-11-20-182337.png" width=500 length=500>
+
+### 1 worker
+
+<p align="center">
+    <img src="https://i.ibb.co/Jvq9kYP/Screenshot-2023-11-20-182241.png" width=500 length=500>
+
+### Grafik
+
+<p align="center">
+    <img src="https://i.ibb.co/xS1b4vL/Screenshot-2023-11-20-205359.png" width=500 length=500>
+
+### 10
+>Melakukan konfigurasi autentikasi di LB dengan dengan kombinasi username: “netics” dan password: “ajkyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/rahasisakita/ 
+### Testing
+
+```bash
+lynx www.granz.channel.it07.com
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/BCgb4Yy/Screenshot-2023-11-20-194657.png" width=500 length=500>
+
+<p align="center">
+    <img src="https://i.ibb.co/rZ98XBV/Screenshot-2023-11-20-194930.png" width=500 length=500>
+
+<p align="center">
+    <img src="https://i.ibb.co/jyd4dJP/Screenshot-2023-11-20-195029.png" width=500 length=500>
+
+### 11
+>Membuat untuk setiap request yang mengandung /its akan di proxy passing menuju halaman myits
+### Testing
+
+```bash
+lynx www.granz.channel.it07.com/its
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/XC3Qhrk/Screenshot-2023-11-20-195435.png" width=500 length=500>
+
+### 12
+>Membuat agar LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [Prefix IP].3.70, [Prefix IP].4.167, dan [Prefix IP].4.168.
+### Scripting
+
+
+```bash
+   location / {
+        allow 10.67.3.69;
+        allow 10.67.3.70;
+        allow 10.67.4.167;
+        allow 10.67.4.168;
+        deny all;
+        proxy_pass http://worker;
+    }
+
+```
+### Testing
+
+```bash
+lynx www.granz.channel.it07.com
+```
+
+### Result 
+
+<p align="center">
+    <img src="https://i.ibb.co/BCgb4Yy/Screenshot-2023-11-20-194657.png" width=500 length=500>
 
 ### 13.
 
