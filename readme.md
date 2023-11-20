@@ -500,11 +500,8 @@ Dan berikut ini adalah hasil dari benchmark nya
 
 <p align="center">
     <img src="https://i.ibb.co/2kk5xtL/19a.jpg" width=400 length=400>
-### Result 18
-
 <p align="center">
     <img src="https://i.ibb.co/sCjzbyt/19b.jpg" width=400 length=400>
-### Result 18
 
 <p align="center">
     <img src="https://i.ibb.co/vv2mYfn/19c.jpg" width=400 length=400>
