@@ -354,6 +354,7 @@ VITE_PUSHER_PORT="${PUSHER_PORT}"
 VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
 VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 ' > /var/www/laravel-praktikum-jarkom/.env
+
 cd /var/www/laravel-praktikum-jarkom && php artisan migrate:fresh
 cd /var/www/laravel-praktikum-jarkom && php artisan db:seed --class=AiringsTableSeeder
 cd /var/www/laravel-praktikum-jarkom && php artisan key:generate
@@ -411,8 +412,6 @@ service php8.0-fpm start
 lynx localhost:<PORT LARAVEL WORKER>
 ```
 
->
-
 ### Result 14
 
 <p align="center">
@@ -468,6 +467,16 @@ curl -X POST -H "Content-Type: application/json" -d @login.json http://10.67.4.1
 token=$(cat login_output.txt | jq -r '.token')```
 ````
 
+### Testing
+
+```bash
+ab -n 100 -c 10 -p -s 120 register.json -T application/json http://10.67.4.1:8001/api/auth/register
+
+ab -n 100 -c 10 -p login.json -s 120 -T application/json http://10.67.4.1:8001/api/auth/login
+
+ab -n 100 -c 10 -H "Authorization: Bearer $token" http://10.67.4.1:8001/api/me
+```
+
 Dan berikut ini adalah hasil dari benchmark nya
 
 ### Result 15
@@ -485,10 +494,53 @@ Dan berikut ini adalah hasil dari benchmark nya
 <p align="center">
     <img src="https://i.ibb.co/r63BdWr/17.jpg" width=400 length=400>
 
+### 18
+
+> Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channel maka implementasikan Proxy Bind pada Eisen untuk mengaitkan IP dari Frieren, Flamme, dan Fern.
+
+Sesuai dengan perintah nya, praktikan diminta untuk membagi Load Request dari client kepada ke-3 Laravel Worker. Kita harus melakukan
+
+### Scripting
+
+> Masukkan script ini pada .bashrc di Database server alias **Denken**
+
+```bash
+echo 'upstream worker {
+    server 10.67.4.1:8001;
+    server 10.67.4.2:8002;
+    server 10.67.4.3:8003;
+}
+
+server {
+    listen 80;
+    server_name riegel.canyon.it07.com www.riegel.canyon.it07.com;
+
+    location / {
+        proxy_pass http://worker;
+    }
+}
+' > /etc/nginx/sites-available/laravel-worker
+
+service nginx restart
+```
+
+### Testing request dari client
+
+```bash
+ab -n 100 -c 10 -p login.json -s 120 -T application/json http://10.67.4.1:8001/api/auth/login
+```
+
 ### Result 18
 
 <p align="center">
     <img src="https://i.ibb.co/SRnXQxx/18a.jpg" width=400 length=400>
+
+#### Efek dari Load Balancing
+
+<p align="center">
+    Request pada semua Laravel Worker menjadi terdistribusi seimbang
+</p>
+
 <p align="center">
     <img src="https://i.ibb.co/GJn3Msx/18b.jpg" width=400 length=400>
 <p align="center">
@@ -496,17 +548,155 @@ Dan berikut ini adalah hasil dari benchmark nya
 <p align="center">
     <img src="https://i.ibb.co/dgYFj1K/18d.jpg" width=400 length=400>
 
-### Result 19
+---
+
+### 19
+
+> Untuk meningkatkan performa dari Worker, coba implementasikan PHP-FPM pada Frieren, Flamme, dan Fern. Untuk testing kinerja naikkan
+
+- pm.max_children
+- pm.start_servers
+- pm.min_spare_servers
+- pm.max_spare_servers
+
+  sebanyak tiga percobaan dan lakukan testing sebanyak 100 request dengan 10 request/second kemudian berikan hasil analisisnya pada Grimoire
+
+Alhasil, kita akan melakukan tuning pada Load Balancer denga script sebagai berikut, Analisa awal kami adalah jika tuning ditingkatkan maka hasil response time juga akan makin cepat
+
+#### Tuning 1
+
+```bash
+echo '[www]
+user = www-data
+group = www-data
+listen = /run/php/php8.0-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+php_admin_value[disable_functions] = exec,passthru,shell_exec,system
+php_admin_flag[allow_url_fopen] = off
+
+; Choose how the process manager will control the number of child processes.
+
+pm = dynamic
+pm.max_children = 25
+pm.start_servers = 5
+pm.min_spare_servers = 3
+pm.max_spare_servers = 10' > /etc/php/8.0/fpm/pool.d/www.conf
+
+service php8.0-fpm restart
+```
+
+#### Hasil Tuning 1 = 45.65
 
 <p align="center">
     <img src="https://i.ibb.co/2kk5xtL/19a.jpg" width=400 length=400>
+
+#### Tuning 2
+
+```cpp
+echo '[www]
+user = www-data
+group = www-data
+listen = /run/php/php8.0-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+php_admin_value[disable_functions] = exec,passthru,shell_exec,system
+php_admin_flag[allow_url_fopen] = off
+
+; Choose how the process manager will control the number of child processes.
+
+pm = dynamic
+pm.max_children = 50
+pm.start_servers = 8
+pm.min_spare_servers = 5
+pm.max_spare_servers = 15' > /etc/php/8.0/fpm/pool.d/www.conf
+
+service php8.0-fpm restart
+```
+
+#### Hasil Tuning 2 = 45.01
+
 <p align="center">
     <img src="https://i.ibb.co/sCjzbyt/19b.jpg" width=400 length=400>
 
+#### Tuning 3
+
+```bash
+echo '[www]
+user = www-data
+group = www-data
+listen = /run/php/php8.0-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+php_admin_value[disable_functions] = exec,passthru,shell_exec,system
+php_admin_flag[allow_url_fopen] = off
+
+; Choose how the process manager will control the number of child processes.
+
+pm = dynamic
+pm.max_children = 75
+pm.start_servers = 10
+pm.min_spare_servers = 5
+pm.max_spare_servers = 20' > /etc/php/8.0/fpm/pool.d/www.conf
+
+service php8.0-fpm restart
+```
+
+#### Hasil tuning 3 = 38.93
+
 <p align="center">
     <img src="https://i.ibb.co/vv2mYfn/19c.jpg" width=400 length=400>
+
+Alhasil, kami bisa menyimpulkan bahwa semakin tinggi parameter ditingkatkan pada load balancer, response time pun akan meningkat
+
+### 20
+
+> Nampaknya hanya menggunakan PHP-FPM tidak cukup untuk meningkatkan performa dari worker maka implementasikan Least-Conn pada Eisen. Untuk testing kinerja dari worker tersebut dilakukan sebanyak 100 request dengan 10 request/second.
+
+Praktikan diminta untuk menambahkan algoritma Least-Conn, dan bandingkan kecepatan nya
+
+```bash
+least_conn; # Algoritma Least-Connection
+```
+
+```bash
+echo 'upstream worker {
+    least_conn; # Algoritma Least-Connection
+    server 10.67.4.1:8001;
+    server 10.67.4.2:8002;
+    server 10.67.4.3:8003;
+}
+
+server {
+    listen 80;
+    server_name riegel.canyon.it07.com www.riegel.canyon.it07.com;
+
+    location / {
+        proxy_pass http://worker;
+    }
+}
+' > /etc/nginx/sites-available/laravel-worker
+
+service nginx restart
+```
 
 ### Result 20
 
 <p align="center">
     <img src="https://i.ibb.co/Y7RQmC7/20.jpg" width=400 length=400>
+
+Terlihat hasil **Percentage of the request ...** menurun jika dibandingkan hasil benchmark sebelumnya (1059 -> 288). Hal tersebut menandakan bahwa algoritma tersebut menambah kecepatan (ms) dengan cukup signifikan
+
+---
+
+# IT07 Pamit
+
+## Authors
+
+| Nama                                                | NRP        |
+| --------------------------------------------------- | ---------- |
+| [Rangga Aldo](https://www.github.com/ranggaaldosas) | 5027211059 |
+| [Maulana Ilyasa](https://www.github.com/xxx)        | 5027211065 |
+
+<p align="center">
+    <img src="https://i.ibb.co/Z6Hf5Rq/82u6f1.jpg">
